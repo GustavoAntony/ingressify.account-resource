@@ -22,5 +22,4 @@ public class AccountResource implements AccountController {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
-    
 }
