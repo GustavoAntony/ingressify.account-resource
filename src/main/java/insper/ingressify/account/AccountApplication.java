@@ -1,4 +1,4 @@
-package insper.passify.account;
+package insper.ingressify.account;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
