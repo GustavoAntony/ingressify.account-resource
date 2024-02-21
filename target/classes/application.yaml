@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/ingressify}
+    username: ${DATABASE_USERNAME:ingressify}
+    password: ${DATABASE_PASSWORD:ingressify}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    baseline-on-migrate: true
+    schemas: account
+  jpa:
+    properties:
+      hibernate:
+        default_schema: account
