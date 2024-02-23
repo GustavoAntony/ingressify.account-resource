@@ -1,7 +1,13 @@
 package insper.ingressify.account;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import lombok.NonNull;
 
 @Service
 public class AccountService {
@@ -11,6 +17,22 @@ public class AccountService {
 
     public Account create(Account in) {
         return accountRepository.save(new AccountModel(in)).to();
+    }
+
+    public Account read(@NonNull String id) {
+        return accountRepository.findById(id).map(model -> model.to()).orElse(null);
+    }
+
+    public Account login(String email, String password) throws NoSuchAlgorithmException{
+        String hash = calculateHash(password);
+        return accountRepository.findByEmailAndHash(email, hash).map(model -> model.to()).orElse(null);
+    }
+
+    private String calculateHash(String text) throws NoSuchAlgorithmException{
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
+        byte[] encoded = java.util.Base64.getEncoder().encode(hash);
+        return new String(encoded);
     }
     
 }
