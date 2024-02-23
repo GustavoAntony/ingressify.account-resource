@@ -15,7 +15,9 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-    public Account create(Account in) {
+    public Account create(Account in){
+        in.hash(calculateHash(in.password()));
+        in.password(null);
         return accountRepository.save(new AccountModel(in)).to();
     }
 
@@ -23,16 +25,20 @@ public class AccountService {
         return accountRepository.findById(id).map(model -> model.to()).orElse(null);
     }
 
-    public Account login(String email, String password) throws NoSuchAlgorithmException{
+    public Account login(String email, String password){
         String hash = calculateHash(password);
         return accountRepository.findByEmailAndHash(email, hash).map(model -> model.to()).orElse(null);
     }
 
-    private String calculateHash(String text) throws NoSuchAlgorithmException{
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-        byte[] encoded = java.util.Base64.getEncoder().encode(hash);
-        return new String(encoded);
+    private String calculateHash(String text){
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(text.getBytes(StandardCharsets.UTF_8));
+            byte[] encoded = java.util.Base64.getEncoder().encode(hash);
+            return new String(encoded);}
+        catch(NoSuchAlgorithmException e){
+            throw new RuntimeException(e);
+        }
     }
     
 }
