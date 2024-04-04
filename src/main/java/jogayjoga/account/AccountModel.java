@@ -1,4 +1,4 @@
-package insper.ingressify.account;
+package jogayjoga.account;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

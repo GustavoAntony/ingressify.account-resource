@@ -1,4 +1,4 @@
-package insper.ingressify.account;
+package jogayjoga.account;
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;

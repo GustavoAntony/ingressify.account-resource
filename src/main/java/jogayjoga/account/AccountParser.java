@@ -1,4 +1,4 @@
-package insper.ingressify.account;
+package jogayjoga.account;
 
 public class AccountParser {
     public static Account to(AccountIn in ){

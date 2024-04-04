@@ -1,4 +1,4 @@
-package insper.ingressify.account;
+package jogayjoga.account;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

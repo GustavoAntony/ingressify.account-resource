@@ -3,11 +3,11 @@ server:
 
 spring:
   application:
-    name: ingressify-account
+    name: jogayjoga-account
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/ingressify}
-    username: ${DATABASE_USERNAME:ingressify}
-    password: ${DATABASE_PASSWORD:ingressify}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/jogayjoga}
+    username: ${DATABASE_USERNAME:jogayjoga}
+    password: ${DATABASE_PASSWORD:jogayjoga}
     driver-class-name: org.postgresql.Driver
   flyway:
     baseline-on-migrate: true

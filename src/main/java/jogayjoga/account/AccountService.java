@@ -1,4 +1,4 @@
-package insper.ingressify.account;
+package jogayjoga.account;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
