@@ -1,6 +1,13 @@
 server:
   port: 0
 
+springdoc:
+  api-docs:
+    path: /company/v3/api-docs
+  swagger-ui:
+    path: /company/swagger-ui.html
+
+
 spring:
   application:
     name: jogayjoga-account
