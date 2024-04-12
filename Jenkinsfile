@@ -4,7 +4,7 @@ pipeline {
 
         stage('Build Interface') {
             steps {
-                build job: 'jogayjoga.account', wait: true
+                build job: 'jogayjoga-account', wait: true
             }
         }
 
