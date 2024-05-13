@@ -1,5 +1,5 @@
 server:
-  port: 0
+  port: 8080
 
 springdoc:
   api-docs:
@@ -12,9 +12,9 @@ spring:
   application:
     name: jogayjoga-account
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/jogayjoga}
-    username: ${DATABASE_USERNAME:jogayjoga}
-    password: ${DATABASE_PASSWORD:jogayjoga}
+    url: jdbc:postgresql://${POSTGRES_HOST}:5432/${POSTGRES_DB}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:Post123321}
     driver-class-name: org.postgresql.Driver
   flyway:
     baseline-on-migrate: true
