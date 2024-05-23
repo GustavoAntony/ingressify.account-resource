@@ -1,10 +1,10 @@
 pipeline {
     agent any
     environment {
-        K8S_PORT = 23057
+        K8S_LOCAL_PORT = 23057
     }
     stages {
-        stage('Build Account') {
+        stage('Dependecies') {
             steps {
                 build job: 'jogayjoga-account', wait: true
             }
@@ -14,30 +14,45 @@ pipeline {
                 sh 'mvn clean package'
             }
         }      
-        stage('Build Image') {
+        stage('Build & Push Image') {
             steps {
-                script {
-                    image = docker.build("jogayjoga/account:${env.BUILD_ID}", "-f Dockerfile .")
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-credential', usernameVariable: 'USERNAME', passwordVariable: 'TOKEN')]) {
+                    sh "docker login -u $USERNAME -p $TOKEN"
+                    sh "docker buildx create --use --platform=linux/arm64,linux/amd64 --node multi-platform-builder-${env.SERVICE} --name multi-platform-builder-${env.SERVICE}"
+                    sh "docker buildx build --platform=linux/arm64,linux/amd64 --push --tag ${env.NAME}:latest --tag ${env.NAME}:${env.BUILD_ID} -f Dockerfile ."
+                    sh "docker buildx rm --force multi-platform-builder-${env.SERVICE}"
                 }
             }
         }
-        stage('Push Image') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub-credential') {
-                        image.push("${env.BUILD_ID}")
-                        image.push("latest")
-                    }
-                }
+        stage('Deploy on Local K8s') {
+            when { 
+                environment name: 'LOCAL', value: 'true'
             }
-        }
-        stage('Deploy on k8s') {
             steps {
                 withCredentials([ string(credentialsId: 'minikube-credential', variable: 'api_token') ]) {
-                    sh "kubectl --token $api_token --server https://host.docker.internal:${env.K8S_PORT}  --insecure-skip-tls-verify=true apply -f ./k8s/deployment.yaml"
-                    sh "kubectl --token $api_token --server https://host.docker.internal:${env.K8S_PORT}  --insecure-skip-tls-verify=true apply -f ./k8s/service.yaml"
+                    sh "kubectl --token $api_token --server https://host.docker.internal:${env.K8S_LOCAL_PORT}  --insecure-skip-tls-verify=true apply -f ./k8s/deployment.yaml"
+                    sh "kubectl --token $api_token --server https://host.docker.internal:${env.K8S_LOCAL_PORT}  --insecure-skip-tls-verify=true apply -f ./k8s/service.yaml"
                 }
             }
         }
+        stage('Deploy on MicroK8s') {
+            when { 
+                environment name: 'MicroK8s', value: 'true'
+            }
+            steps {
+                sh "microk8s kubectl apply -f ./k8s/deployment.yaml"
+                sh "microk8s kubectl apply -f ./k8s/service.yaml"
+            }
+        }
+        stage('Deploy on AWS K8s') {
+            when { 
+                environment name: 'AWS', value: 'true'
+            }
+            steps {
+                sh "kubectl apply -f ./k8s/deployment.yaml"
+                sh "kubectl apply -f ./k8s/service.yaml"
+            }
+        }
+
     }
 }
