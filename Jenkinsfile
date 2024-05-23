@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Dependecies') {
             steps {
-                build job: 'jogayjoga.account', wait: true
+                build job: 'jogayjoga-account', wait: true
             }
         }
         stage('Build') { 
